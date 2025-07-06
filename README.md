@@ -1,12 +1,12 @@
 **AUTOMATED-CONTAINER-DEPLOYMENT-AND-ADMINISTRATION-IN-THE-CLOUD**
 
-    This project demonstrates how to automatically provision cloud infrastructure, configure a server, containerize a Python Flask web application, and deploy it using a complete DevOps pipeline. It integrates AWS CloudFormation, Ansible, Docker, and GitHub Actions to enable CI/CD workflows for scalable, repeatable deployments.
+This project demonstrates how to automatically provision cloud infrastructure, configure a server, containerize a Python Flask web application, and deploy it using a complete DevOps pipeline. It integrates AWS CloudFormation, Ansible, Docker, and GitHub Actions to enable CI/CD workflows for scalable, repeatable deployments.
 
 **Project Structure**
 
 cloudformation-template.yaml – Provisions EC2, VPC, subnet, and security groups on AWS
 
-inventory.ini – Hosts file for Ansible to connect to EC2
+        inventory.ini – Hosts file for Ansible to connect to EC2
 
 install_docker.yml – Ansible playbook to install Docker on the EC2 instance
 
