@@ -32,8 +32,8 @@ jobs:
       run: |
         ssh -i ec2key.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} "
           cd ~/app &&
-          docker stop flaskapp || true &&
-          docker rm flaskapp || true &&
+          docker ps -q --filter "name=flaskapp" | xargs -r docker stop &&
+          docker ps -aq --filter "name=flaskapp" | xargs -r docker rm &&
           docker build -t flaskapp . &&
           docker run -d --name flaskapp -p 80:5000 flaskapp
         "
