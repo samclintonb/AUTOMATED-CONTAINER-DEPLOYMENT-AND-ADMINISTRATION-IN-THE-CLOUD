@@ -3,7 +3,7 @@ name: Deploy to EC2 via SCP and Docker
 on:
   push:
     branches:
-      - main  # or 'master' — make sure this matches your default branch
+      - main  
 
 jobs:
   deploy:
@@ -16,7 +16,7 @@ jobs:
     - name: Prepare deployment folder
       run: |
         mkdir -p deploy
-        cp app.py Dockerfile deploy/
+        cp app.py Dockerfile requirements.txt -t deploy/
 
     - name: Write SSH key to file
       run: |
