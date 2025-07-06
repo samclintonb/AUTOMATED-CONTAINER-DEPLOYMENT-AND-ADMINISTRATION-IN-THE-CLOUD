@@ -1,4 +1,6 @@
-This project demonstrates how to automatically provision cloud infrastructure, configure a server, containerize a Python Flask web application, and deploy it using a complete DevOps pipeline. It integrates AWS CloudFormation, Ansible, Docker, and GitHub Actions to enable CI/CD workflows for scalable, repeatable deployments.
+**AUTOMATED-CONTAINER-DEPLOYMENT-AND-ADMINISTRATION-IN-THE-CLOUD**
+
+    This project demonstrates how to automatically provision cloud infrastructure, configure a server, containerize a Python Flask web application, and deploy it using a complete DevOps pipeline. It integrates AWS CloudFormation, Ansible, Docker, and GitHub Actions to enable CI/CD workflows for scalable, repeatable deployments.
 
 **Project Structure**
 
