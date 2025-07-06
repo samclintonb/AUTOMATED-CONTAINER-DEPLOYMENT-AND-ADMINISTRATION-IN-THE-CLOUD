@@ -1,0 +1,39 @@
+name: Deploy to EC2 via SCP and Docker
+
+on:
+  push:
+    branches:
+      - main  # or 'master' — make sure this matches your default branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Prepare deployment folder
+      run: |
+        mkdir -p deploy
+        cp app.py Dockerfile deploy/
+
+    - name: Write SSH key to file
+      run: |
+        echo "${{ secrets.EC2_SSH_KEY }}" > ec2key.pem
+        chmod 600 ec2key.pem
+
+    - name: Copy files to EC2 instance
+      run: |
+        ssh -o StrictHostKeyChecking=no -i ec2key.pem ec2-user@${{ secrets.EC2_HOST }} "mkdir -p ~/app"
+        scp -i ec2key.pem -o StrictHostKeyChecking=no deploy/* ec2-user@${{ secrets.EC2_HOST }}:~/app/
+
+    - name: Build and run Docker container on EC2
+      run: |
+        ssh -i ec2key.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} "
+          cd ~/app &&
+          docker stop flaskapp || true &&
+          docker rm flaskapp || true &&
+          docker build -t flaskapp . &&
+          docker run -d --name flaskapp -p 80:5000 flaskapp
+        "
