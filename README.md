@@ -1,73 +1,90 @@
-# AUTOMATED-CONTAINER-DEPLOYMENT-AND-ADMINISTRATION-IN-THE-CLOUD
+This project demonstrates how to automatically provision cloud infrastructure, configure a server, containerize a Python Flask web application, and deploy it using a complete DevOps pipeline. It integrates AWS CloudFormation, Ansible, Docker, and GitHub Actions to enable CI/CD workflows for scalable, repeatable deployments.
 
-## ✅ Part 1: Provision EC2 via CloudFormation
+Project Structure
+cloudformation-template.yaml – Provisions EC2, VPC, subnet, and security groups on AWS
 
-**File**: `cloudformation-template.yaml`
+inventory.ini – Hosts file for Ansible to connect to EC2
 
-- Creates VPC, Subnet, Route Table, Internet Gateway
-- Launches EC2 Instance with SSH (port 22) and HTTP (port 80) access
+install_docker.yml – Ansible playbook to install Docker on the EC2 instance
 
-**Steps**:
-1. Launch stack via AWS CloudFormation → Upload the template.
-2. Provide existing EC2 key pair name.
-3. Note the EC2 **public IP** from Outputs.
+run_flask_in_docker.yml – Ansible playbook to deploy Flask app via Docker
 
----
+Dockerfile – Instructions to containerize the Flask app
 
-## Part 2: Install Docker via Ansible
+app.py – Flask web application code
 
-**Files**: `inventory.ini`, `install_docker.yml`
+requirements.txt – Python dependencies
 
-**Steps**:
-```bash
+.github/workflows/deploy.yml – GitHub Actions workflow for CI/CD pipeline
+
+Part 1: Provision Infrastructure with CloudFormation
+Open AWS CloudFormation console
+
+Upload cloudformation-template.yaml
+
+Enter KeyPair name (for SSH access)
+
+Launch the stack and note the EC2 Public IP from Outputs
+
+Part 2: Install Docker with Ansible
+Install Ansible on your local machine using:
+
 sudo apt update && sudo apt install -y ansible
-chmod 400 ~/.ssh/ec2key.pem
+
+Replace the IP in inventory.ini with your EC2 public IP
+
+Set key permissions: chmod 400 ~/.ssh/ec2key.pem
+
+Run the Ansible playbook:
+
 ansible-playbook -i inventory.ini install_docker.yml
-Tasks performed:
 
-Update packages
+SSH into the instance to verify:
 
-Install Docker
+ssh -i ~/.ssh/ec2key.pem ec2-user@<EC2-IP>
+docker --version
 
-Enable/start Docker service
+Part 3: Run Flask App in Docker using Ansible
+Ensure app.py and Dockerfile are present locally
 
-Add user to docker group
+Run the deployment playbook:
 
-## Part 3: Deploy Flask in Docker via Ansible
-Files: app.py, Dockerfile, run_flask_in_docker.yml
-
-bash
-Copy
 ansible-playbook -i inventory.ini run_flask_in_docker.yml
-Opens app in browser:
 
-cpp
-Copy
-http://<your-ec2-public-ip>
-Workflow:
+Visit http://<EC2-PUBLIC-IP> in your browser
 
-Copies code to EC2
+You should see: “Hello from Docker configured with Ansible!”
 
-Builds Docker image
+Part 4: Set Up CI/CD with GitHub Actions
+Push app.py, Dockerfile, and .github/workflows/deploy.yml to your GitHub repository
 
-Stops old container
+In GitHub, go to:
+Settings → Secrets and variables → Actions → New repository secret
 
-Runs Flask container on port 80
+Add the following secrets:
 
-## Part 4: CI/CD with GitHub Actions
-File: .github/workflows/deploy.yml
+EC2_HOST: your EC2 public IP
 
-Auto deploys Flask app on every push to main branch.
+EC2_USER: ec2-user (Amazon Linux) or ubuntu (Ubuntu)
 
-🔐 Required GitHub Secrets:
-Name	Value
-EC2_HOST	Your EC2 Public IP
-EC2_USER	ec2-user (Amazon Linux)
-EC2_SSH_KEY	Content of your .pem file
+EC2_SSH_KEY: content of your .pem file (as a single line)
 
-Steps:
-bash
-Copy
-git add .
-git commit -m "Trigger pipeline"
-git push origin main
+Push any changes to the main branch. This will trigger the GitHub Actions workflow to:
+
+Connect to EC2 over SSH
+
+Copy updated files
+
+Stop old containers
+
+Build and run new Docker container
+
+How It Works
+EC2 provisioned via CloudFormation
+
+Docker installed with Ansible
+
+Flask app containerized and deployed
+
+CI/CD pipeline with GitHub Actions auto-deploys on every push
+
