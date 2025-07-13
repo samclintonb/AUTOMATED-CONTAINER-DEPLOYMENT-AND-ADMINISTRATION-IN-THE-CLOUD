@@ -64,3 +64,4 @@ Build and run new Docker container
 EC2 provisioned via CloudFormation 
 Docker installed with Ansible 
 Flask app containerized and deployed CI/CD pipeline with GitHub Actions auto-deploys on every push
+
