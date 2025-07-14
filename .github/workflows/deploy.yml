@@ -16,7 +16,8 @@ jobs:
     - name: Prepare deployment folder
       run: |
         mkdir -p deploy
-        cp -r app.py Dockerfile requirements.txt templates -t deploy/
+        cp app.py Dockerfile requirements.txt -t deploy/
+        cp -r templates deploy/templates
 
     - name: Write SSH key to file
       run: |
@@ -26,8 +27,8 @@ jobs:
     - name: Copy files to EC2 instance
       run: |
         ssh -o StrictHostKeyChecking=no -i ec2key.pem ec2-user@${{ secrets.EC2_HOST }} "mkdir -p ~/app"
-        scp -i ec2key.pem -o StrictHostKeyChecking=no deploy/* ec2-user@${{ secrets.EC2_HOST }}:~/app/
-
+        scp -i ec2key.pem -o StrictHostKeyChecking=no -r deploy/* ec2-user@${{ secrets.EC2_HOST }}:~/app/
+  
     - name: Build and run Docker container on EC2
       run: |
         ssh -i ec2key.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} "
