@@ -16,7 +16,7 @@ jobs:
     - name: Prepare deployment folder
       run: |
         mkdir -p deploy
-        cp app.py Dockerfile requirements.txt -t deploy/
+        cp -r app.py Dockerfile requirements.txt templates -t deploy/
 
     - name: Write SSH key to file
       run: |
